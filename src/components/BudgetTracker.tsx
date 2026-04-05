@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { Transaction, Budget, MonthlyIncome } from '../types';
-import { DEFAULT_CATEGORIES } from '../types';
 
 interface Props {
   transactions: Transaction[];
@@ -8,9 +7,10 @@ interface Props {
   onBudgetsChange: (budgets: Budget[]) => void;
   income: MonthlyIncome[];
   onIncomeChange: (income: MonthlyIncome[]) => void;
+  categories: string[];
 }
 
-export function BudgetTracker({ transactions, budgets, onBudgetsChange, income, onIncomeChange }: Props) {
+export function BudgetTracker({ transactions, budgets, onBudgetsChange, income, onIncomeChange, categories }: Props) {
   const [newCategory, setNewCategory] = useState('');
   const [newLimit, setNewLimit] = useState('');
   const [newIncomeMonth, setNewIncomeMonth] = useState('');
@@ -133,7 +133,7 @@ export function BudgetTracker({ transactions, budgets, onBudgetsChange, income, 
         <div className="add-budget-form">
           <select value={newCategory} onChange={e => setNewCategory(e.target.value)}>
             <option value="">Select category...</option>
-            {DEFAULT_CATEGORIES.filter(c => c !== 'Income' && c !== 'Ignore' && c !== 'Reimbursed').map(c => (
+            {categories.filter(c => c !== 'Income' && c !== 'Ignore' && c !== 'Reimbursed').map(c => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>

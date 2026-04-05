@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import type { Transaction } from '../types';
-import { DEFAULT_CATEGORIES } from '../types';
 import { formatDate } from '../formatDate';
 
 interface Props {
   transactions: Transaction[];
+  categories: string[];
   onUpdate: (updated: Transaction) => void;
   onDelete: (id: string) => void;
 }
 
-export function TransactionList({ transactions, onUpdate, onDelete }: Props) {
+export function TransactionList({ transactions, categories, onUpdate, onDelete }: Props) {
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterMonth, setFilterMonth] = useState('');
@@ -45,7 +45,7 @@ export function TransactionList({ transactions, onUpdate, onDelete }: Props) {
         />
         <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
           <option value="">All categories</option>
-          {DEFAULT_CATEGORIES.map(c => (
+          {categories.map(c => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
@@ -78,7 +78,7 @@ export function TransactionList({ transactions, onUpdate, onDelete }: Props) {
                     value={t.category}
                     onChange={e => onUpdate({ ...t, category: e.target.value })}
                   >
-                    {DEFAULT_CATEGORIES.map(c => (
+                    {categories.map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>

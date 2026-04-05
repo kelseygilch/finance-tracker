@@ -49,11 +49,14 @@ export function SuggestedBudget({ transactions, annualTarget }: Props) {
       const avgMonthly = monthCount > 0 ? spent / monthCount : 0;
       const onTrack = spent <= (yearBudget / 12) * monthCount;
 
+      const baseMontly = yearBudget / 12;
+
       return {
         category: cat,
         yearBudget: Math.round(yearBudget * 100) / 100,
         spent: Math.round(spent * 100) / 100,
         categoryRemaining: Math.round(categoryRemaining * 100) / 100,
+        baseMonthly: Math.round(baseMontly * 100) / 100,
         monthlyTarget: Math.round(monthlyTarget * 100) / 100,
         avgMonthly: Math.round(avgMonthly * 100) / 100,
         pctUsed: yearBudget > 0 ? Math.round((spent / yearBudget) * 100) : 0,
@@ -129,7 +132,8 @@ export function SuggestedBudget({ transactions, annualTarget }: Props) {
               <th>Spent</th>
               <th>Remaining</th>
               <th>Avg/Mo</th>
-              <th>Target/Mo</th>
+              <th>Budget/Mo</th>
+              <th>Adj. Target/Mo</th>
               <th>% Used</th>
               <th>Status</th>
             </tr>
@@ -144,6 +148,7 @@ export function SuggestedBudget({ transactions, annualTarget }: Props) {
                   ${r.categoryRemaining.toLocaleString()}
                 </td>
                 <td>${r.avgMonthly.toLocaleString()}</td>
+                <td>${r.baseMonthly.toLocaleString()}</td>
                 <td><strong>${r.monthlyTarget.toLocaleString()}</strong></td>
                 <td>
                   <div className="progress-bar" style={{ width: 80, display: 'inline-block' }}>
@@ -169,6 +174,7 @@ export function SuggestedBudget({ transactions, annualTarget }: Props) {
                 <strong>${data.remaining.toLocaleString()}</strong>
               </td>
               <td><strong>${Math.round(data.totalSpent / data.monthCount).toLocaleString()}</strong></td>
+              <td><strong>${Math.round(annualTarget / 12).toLocaleString()}</strong></td>
               <td><strong>${data.remainingMonths > 0 ? Math.round(data.remaining / data.remainingMonths).toLocaleString() : '—'}</strong></td>
               <td><strong>{data.pctBudget}%</strong></td>
               <td></td>

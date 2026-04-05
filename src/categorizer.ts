@@ -1,22 +1,20 @@
-import categoryMap from './categoryMap.json';
-
-const entries = Object.entries(categoryMap as Record<string, string>);
+import { loadCategoryMap } from './storage';
 
 export function guessCategory(description: string): string | null {
+  const categoryMap = loadCategoryMap();
+  const entries = Object.entries(categoryMap);
   const upper = description.trim().toUpperCase();
   if (!upper) return null;
 
   // 1. Exact match
-  const exact = (categoryMap as Record<string, string>)[upper];
+  const exact = categoryMap[upper];
   if (exact) return exact;
 
   // 2. Check if the description starts with or contains a known key
   //    (handles cases like "UBER *TRIP HELP.UBER.COM" matching "UBER* TRIP")
+  const normDesc = upper.replace(/[^A-Z0-9]/g, '');
   for (const [key, cat] of entries) {
-    // Normalize both for comparison: strip spaces and special chars
     const normKey = key.replace(/[^A-Z0-9]/g, '');
-    const normDesc = upper.replace(/[^A-Z0-9]/g, '');
-
     if (normDesc === normKey) return cat;
     if (normDesc.startsWith(normKey) || normKey.startsWith(normDesc)) return cat;
   }

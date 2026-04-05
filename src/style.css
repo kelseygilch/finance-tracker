@@ -594,6 +594,75 @@ select {
   color: #991B1B;
 }
 
+/* Settings */
+.category-manager h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.settings-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.settings-section h3 {
+  margin-bottom: 8px;
+}
+
+.settings-description {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f1f5f9;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.category-item.system {
+  background: #e2e8f0;
+}
+
+.system-label {
+  font-size: 10px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.file-btn {
+  padding: 8px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.file-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .charts-grid {

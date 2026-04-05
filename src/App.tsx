@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import type { Transaction, Budget, MonthlyIncome } from './types';
-import { loadTransactions, saveTransactions, loadBudgets, saveBudgets, loadIncome, saveIncome } from './storage';
+import {
+  loadTransactions, saveTransactions,
+  loadBudgets, saveBudgets,
+  loadIncome, saveIncome,
+  loadCategories, saveCategories,
+  learnCategories,
+} from './storage';
 import { CsvUpload } from './components/CsvUpload';
 import { BudgetTracker } from './components/BudgetTracker';
 import { SpendingInsights } from './components/SpendingInsights';
@@ -8,22 +14,39 @@ import { ExcelExport } from './components/ExcelExport';
 import { TransactionList } from './components/TransactionList';
 import { SuggestedBudget } from './components/SuggestedBudget';
 import { ManualEntry } from './components/ManualEntry';
+import { CategoryManager } from './components/CategoryManager';
 
-type Tab = 'import' | 'transactions' | 'budget' | 'annual' | 'insights';
+type Tab = 'import' | 'transactions' | 'budget' | 'annual' | 'insights' | 'settings';
 
 export function App() {
   const [transactions, setTransactions] = useState<Transaction[]>(loadTransactions);
   const [budgets, setBudgets] = useState<Budget[]>(loadBudgets);
   const [income, setIncome] = useState<MonthlyIncome[]>(loadIncome);
+  const [categories, setCategories] = useState<string[]>(loadCategories);
   const [activeTab, setActiveTab] = useState<Tab>('import');
+
+  // Learn from existing transactions on first load
+  useEffect(() => { learnCategories(transactions); }, []);
 
   useEffect(() => saveTransactions(transactions), [transactions]);
   useEffect(() => saveBudgets(budgets), [budgets]);
   useEffect(() => saveIncome(income), [income]);
+  useEffect(() => saveCategories(categories), [categories]);
 
   function handleImport(newTransactions: Transaction[]) {
+    learnCategories(newTransactions);
     setTransactions(prev => [...prev, ...newTransactions]);
     setActiveTab('insights');
+  }
+
+  function handleManualAdd(t: Transaction) {
+    learnCategories([t]);
+    setTransactions(prev => [...prev, t]);
+  }
+
+  function handleTransactionUpdate(updated: Transaction) {
+    learnCategories([updated]);
+    setTransactions(prev => prev.map(t => t.id === updated.id ? updated : t));
   }
 
   function handleClearData() {
@@ -62,6 +85,9 @@ export function App() {
         <button className={activeTab === 'insights' ? 'active' : ''} onClick={() => setActiveTab('insights')}>
           Insights
         </button>
+        <button className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')}>
+          Settings
+        </button>
       </nav>
 
       {transactions.length > 0 && (
@@ -71,14 +97,15 @@ export function App() {
       <main className="content">
         {activeTab === 'import' && (
           <>
-            <ManualEntry onAdd={(t) => setTransactions(prev => [...prev, t])} />
-            <CsvUpload onImport={handleImport} />
+            <ManualEntry onAdd={handleManualAdd} categories={categories} />
+            <CsvUpload onImport={handleImport} categories={categories} />
           </>
         )}
         {activeTab === 'transactions' && (
           <TransactionList
             transactions={transactions}
-            onUpdate={(updated) => setTransactions(prev => prev.map(t => t.id === updated.id ? updated : t))}
+            categories={categories}
+            onUpdate={handleTransactionUpdate}
             onDelete={(id) => setTransactions(prev => prev.filter(t => t.id !== id))}
           />
         )}
@@ -89,10 +116,14 @@ export function App() {
             onBudgetsChange={setBudgets}
             income={income}
             onIncomeChange={setIncome}
+            categories={categories}
           />
         )}
         {activeTab === 'annual' && <SuggestedBudget transactions={transactions} annualTarget={50000} />}
         {activeTab === 'insights' && <SpendingInsights transactions={transactions} income={income} />}
+        {activeTab === 'settings' && (
+          <CategoryManager categories={categories} onCategoriesChange={setCategories} />
+        )}
       </main>
     </div>
   );

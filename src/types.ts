@@ -24,7 +24,7 @@ export interface ColumnMapping {
   amount: string;
 }
 
-export const DEFAULT_CATEGORIES = [
+export const INITIAL_CATEGORIES = [
   'Bills & Utilities',
   'Entertainment',
   'Fees & Adjustments',
@@ -37,7 +37,7 @@ export const DEFAULT_CATEGORIES = [
   'Reimbursed',
   'Shopping',
   'Travel',
-  'Income',
-  'Other',
-  'Ignore',
-] as const;
+];
+
+// These are always present and cannot be removed
+export const SYSTEM_CATEGORIES = ['Income', 'Other', 'Ignore'] as const;

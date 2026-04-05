@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import type { Transaction } from '../types';
-import { DEFAULT_CATEGORIES } from '../types';
 import { getMonthlyAverageRate } from '../exchangeRate';
 
 interface Props {
   onAdd: (transaction: Transaction) => void;
+  categories: string[];
 }
 
-export function ManualEntry({ onAdd }: Props) {
+export function ManualEntry({ onAdd, categories }: Props) {
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
@@ -90,7 +90,7 @@ export function ManualEntry({ onAdd }: Props) {
         <label>
           Category
           <select value={category} onChange={e => setCategory(e.target.value)}>
-            {DEFAULT_CATEGORIES.map(c => (
+            {categories.map(c => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>

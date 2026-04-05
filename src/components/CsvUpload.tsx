@@ -1,16 +1,16 @@
 import { useState, useRef } from 'react';
 import Papa from 'papaparse';
 import type { Transaction, ColumnMapping } from '../types';
-import { DEFAULT_CATEGORIES } from '../types';
 import { convertAudTransactions } from '../exchangeRate';
 import { guessCategory } from '../categorizer';
 import { formatDate } from '../formatDate';
 
 interface Props {
   onImport: (transactions: Transaction[]) => void;
+  categories: string[];
 }
 
-export function CsvUpload({ onImport }: Props) {
+export function CsvUpload({ onImport, categories }: Props) {
   const [headers, setHeaders] = useState<string[]>([]);
   const [rows, setRows] = useState<string[][]>([]);
   const [mapping, setMapping] = useState<ColumnMapping>({ date: '', description: '', amount: '' });
@@ -233,7 +233,7 @@ export function CsvUpload({ onImport }: Props) {
                         value={t.category}
                         onChange={e => handleCategoryChange(t.id, e.target.value)}
                       >
-                        {DEFAULT_CATEGORIES.map(c => (
+                        {categories.map(c => (
                           <option key={c} value={c}>{c}</option>
                         ))}
                       </select>
